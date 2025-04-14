@@ -1,30 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'signupScreen.dart';
 
-class Loginscreen extends StatefulWidget {
-  const Loginscreen({super.key});
+class SignupScreen extends StatefulWidget {
+  const SignupScreen({super.key});
 
   @override
-  _LoginscreenState createState() => _LoginscreenState();
+  _SignupScreenState createState() => _SignupScreenState();
 }
-class _LoginscreenState extends State<Loginscreen> {
+
+class _SignupScreenState extends State<SignupScreen> {
   final FirebaseAuth auth = FirebaseAuth.instance;
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
-  Future<void> login() async {
+  Future<void> signUp() async {
     try {
-      await auth.signInWithEmailAndPassword(
+      await auth.createUserWithEmailAndPassword(
         email: emailController.text,
         password: passwordController.text,
       );
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Login successful')),
+        SnackBar(content: Text('Sign Up successful')),
       );
+      Navigator.pop(context); 
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Login failed')),
+        SnackBar(content: Text('Sign Up failed')),
       );
     }
   }
@@ -33,7 +34,7 @@ class _LoginscreenState extends State<Loginscreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Login'),
+        title: Text('Sign Up'),
         centerTitle: true,
         backgroundColor: Colors.orangeAccent,
       ),
@@ -52,18 +53,8 @@ class _LoginscreenState extends State<Loginscreen> {
             ),
             SizedBox(height: 20),
             ElevatedButton(
-              onPressed: login,
-              child: Text('Login')
-            ),
-            SizedBox(height: 5),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => SignupScreen()),
-                );
-              },
-              child: Text('Sign Up')
+              onPressed: signUp,
+              child: Text('Sign Up'),
             ),
           ],
         ),
