@@ -12,7 +12,7 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   String firstName = '';
   String lastName = '';
-  
+
   @override
   void initState() {
     super.initState();
@@ -36,8 +36,132 @@ class _ProfileScreenState extends State<ProfileScreen> {
         }
       }
     } catch (e) {
-      print('Error fetching user data: $e');
+      print('Fetching user data failed: $e');
     }
+  }
+
+  Future<void> updateFirstName(String newFirstName) async {
+    try {
+      final User? user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .update({'firstName': newFirstName});
+        setState(() {
+          firstName = newFirstName;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('First name updated.')),
+        );
+      }
+    } catch (e) {
+      print('Error updating first name: $e');
+    }
+  }
+
+  Future<void> updateLastName(String newLastName) async {
+    try {
+      final User? user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .update({'lastName': newLastName});
+        setState(() {
+          lastName = newLastName;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Last name updated.')),
+        );
+      }
+    } catch (e) {
+      print('Error updating last name: $e');
+    }
+  }
+
+  void ChangeFName() {
+    final TextEditingController ChangeFNameController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Change First Name'),
+          content: TextField(
+            controller: ChangeFNameController,
+            decoration: const InputDecoration(
+              labelText: 'Enter New First Name',
+              border: OutlineInputBorder(),
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                final newFirstName = ChangeFNameController.text.trim();
+                if (newFirstName.isNotEmpty) {
+                  updateFirstName(newFirstName);
+                  Navigator.of(context).pop();
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('First name cannot be empty.')),
+                  );
+                }
+              },
+              child: const Text('Update'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Cancel'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void ChangeLName() {
+    final TextEditingController ChangeLNameController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Change Last Name'),
+          content: TextField(
+            controller: ChangeLNameController,
+            decoration: const InputDecoration(
+              labelText: 'Enter New Last Name',
+              border: OutlineInputBorder(),
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                final newLastName = ChangeLNameController.text.trim();
+                if (newLastName.isNotEmpty) {
+                  updateLastName(newLastName);
+                  Navigator.of(context).pop();
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Last name cannot be empty.')),
+                  );
+                }
+              },
+              child: const Text('Update'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Cancel'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -60,11 +184,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
             const SizedBox(height: 20),
             Text(
               '$firstName $lastName',
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
               ),
-            ),          
+            ),
+            const SizedBox(height: 100),
+            ElevatedButton(
+              onPressed: ChangeFName,
+              child: const Text('Change First Name'),
+            ),
+            const SizedBox(height: 10),
+            ElevatedButton(
+              onPressed: ChangeLName,
+              child: const Text('Change Last Name'),
+            ),
           ],
         ),
       ),
