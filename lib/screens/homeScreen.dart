@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:msgboard/screens/profileScreen.dart';
-import 'LoginScreen.dart';
+import 'package:msgboard/screens/settingScreen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -15,18 +15,6 @@ class HomeScreen extends StatelessWidget {
         title: Text('Message Board'),
         centerTitle: true,
         backgroundColor: Colors.orangeAccent,
-        actions: [
-          IconButton(
-            icon: Icon(Icons.logout),
-            onPressed: () async {
-              await auth.signOut();
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder:(context) => LoginScreen())
-              );
-            },
-          )
-        ]
       ),
       drawer: Drawer(
         child: ListView(
@@ -38,6 +26,16 @@ class HomeScreen extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => ProfileScreen())
+                );
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.settings),
+              title: Text('Settings'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => SettingScreen())
                 );
               },
             )
