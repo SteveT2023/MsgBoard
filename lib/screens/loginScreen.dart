@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'signupScreen.dart';
+import 'homeScreen.dart';
 
-class Loginscreen extends StatefulWidget {
-  const Loginscreen({super.key});
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
 
   @override
-  _LoginscreenState createState() => _LoginscreenState();
+  _LoginScreenState createState() => _LoginScreenState();
 }
-class _LoginscreenState extends State<Loginscreen> {
+class _LoginScreenState extends State<LoginScreen> {
   final FirebaseAuth auth = FirebaseAuth.instance;
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
@@ -21,6 +22,10 @@ class _LoginscreenState extends State<Loginscreen> {
       );
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Login successful')),
+      );
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => HomeScreen()),
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
